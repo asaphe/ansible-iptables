@@ -1,0 +1,15 @@
+---
+  - name: Determine if iptables role should run
+    block:
+      - name: "check if {{ iptables_ipv4_rules_file }} exists"
+        stat:
+          path: "{{ iptables_ipv4_rules_file }}"
+          follow: true
+        register: iptablesRules_file
+
+      - name: Import tasks from iptables.yml
+        include_tasks: iptables.yml
+        when: not iptablesRules_file.stat.exists or iptablesForce
+
+    become: true
+    tags: [iptables]

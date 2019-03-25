@@ -1,0 +1,84 @@
+---
+  - block:
+      - name: ensure UFW is disabled
+        ufw:
+          state: disabled
+
+      - name: ensure UFW service is stopped
+        service:
+          name: ufw
+          state: stopped
+
+      - name: ensure ufw test chain IPv4 does not exist
+        iptables:
+          chain: ufw-caps-test
+          state: absent
+
+      - name: ensure ufw test chain IPv6 does not exist
+        iptables:
+          chain: ufw6-caps-test
+          state: absent
+
+      - name: allow related and established connections
+        iptables:
+          chain: INPUT
+          ctstate: ESTABLISHED,RELATED
+          jump: ACCEPT
+          state: present
+
+      - name: allow loopback in
+        iptables:
+          chain: INPUT
+          in_interface: lo
+          protocol: all
+          jump: ACCEPT
+          state: present
+
+      - name: allow loopback out
+        iptables:
+          chain: OUTPUT
+          out_interface: lo
+          protocol: all
+          jump: ACCEPT
+          state: present
+
+    become: true
+    tags: [iptables.basicConfig]
+
+  - block:
+      - name: configure iptables
+        iptables:
+          action: "{{ port.action }}"
+          chain: "{{ port.chain }}"
+          protocol: "{{ port.protocol }}"
+          destination_port: "{{ port.destination_port }}"
+          source_port: "{{ port.source_port }}"
+          state: "{{ port.state }}"
+          jump: "{{ port.jump }}"
+          comment: "{{ port.comment | default('tilix') }}"
+        with_items:
+          - "{{ port_set }}"
+        loop_control:
+          loop_var: port
+
+    become: true
+    tags: [iptables.portSet]
+
+  - block:
+      - name: configure iptables-persistent
+        debconf:
+          name: iptables-persistent
+          question: "{{ item }}"
+          vtype: boolean
+          value: true
+        with_items:
+          - 'iptables-persistent/autosave_v4'
+          - 'iptables-persistent/autosave_v6'
+
+      - name: install iptables-persistent package
+        apt:
+          name: iptables-persistent
+          state: present
+
+    become: true
+    tags: [iptables.saveRules]

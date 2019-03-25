@@ -1,0 +1,225 @@
+---
+iptables_ipv4_rules_file: '/etc/iptables/rules.v4'
+port_set: '{{ default_ports }}'
+iptablesForce: False
+
+default_ports:
+  - port: 22
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 22
+    source_port: 22
+    jump: ACCEPT
+    state: present
+    comment: 'ssh incoming connections'
+  - port: 22
+    action: append
+    chain: OUTPUT
+    protocol: tcp
+    source_port: 22
+    destination_port: 22
+    jump: ACCEPT
+    comment: 'ssh outgoing connections'
+    state: present
+  - port: 53
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 53
+    source_port: 53
+    jump: ACCEPT
+    state: present
+    comment: 'dns-tcp'
+  - port: 53
+    action: append
+    chain: INPUT
+    protocol: udp
+    destination_port: 53
+    source_port: 53
+    jump: ACCEPT
+    state: present
+    comment: 'dns-udp'
+  - port: 123
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 123
+    source_port: 123
+    jump: ACCEPT
+    state: present
+    comment: 'ntp-tcp'
+  - port: 123
+    action: append
+    chain: INPUT
+    protocol: udp
+    destination_port: 123
+    source_port: 123
+    jump: ACCEPT
+    state: present
+    comment: 'ntp-udp'
+
+webserver_ports:
+  - port: 443
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 443
+    source_port: 443
+    jump: ACCEPT
+    state: present
+  - port: 80
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 80
+    source_port: 80
+    jump: ACCEPT
+    state: present
+  - port: 8081
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 8081
+    source_port: 8081
+    jump: ACCEPT
+    state: present
+  - port: 6060
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 6060
+    source_port: 6060
+    jump: ACCEPT
+    state: present
+    comment: 'nginx-status-page'
+
+docker_swarm_manager_ports:
+  - port: 2377
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 2377
+    source_port: 2377
+    jump: ACCEPT
+    state: present
+    comment: 'docker-swarm-management'
+
+docker_swarm_ports:
+  - port: 7946
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 7946
+    source_port: 7946
+    jump: ACCEPT
+    state: present
+    comment: 'docker-swarm-nodes-communication-tcp'
+  - port: 7946
+    action: append
+    chain: INPUT
+    protocol: udp
+    destination_port: 7946
+    source_port: 7946
+    jump: ACCEPT
+    state: present
+    comment: 'docker-swarm-nodes-communication-udp'
+  - port: 4789
+    action: append
+    chain: INPUT
+    protocol: udp
+    destination_port: 4789
+    source_port: 4789
+    jump: ACCEPT
+    state: present
+    comment: 'docker-swarm-overlay-network-traffic'
+
+rabbitmq_ports:
+  - port: 5671
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 5671
+    source_port: 5671
+    jump: ACCEPT
+    state: present
+    comment: 'RMQ'
+  - port: 5672
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 5672
+    source_port: 5672
+    jump: ACCEPT
+    state: present
+    comment: 'RMQ'
+  - port: 15671
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 15671
+    source_port: 15671
+    jump: ACCEPT
+    state: present
+    comment: 'RMQ MGMT-1'
+  - port: 15672
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 15672
+    source_port: 15672
+    jump: ACCEPT
+    state: present
+    comment: 'RMQ MGMT-2'
+  - port: 4369
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 4369
+    source_port: 4369
+    jump: ACCEPT
+    state: present
+    comment: 'RMQ DSCVRY'
+  - port: 25672
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 25672
+    source_port: 25672
+    jump: ACCEPT
+    state: present
+    comment: 'RMQ Erlang'
+
+datadog_ports:
+  - port: 5000
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 5000
+    source_port: 5000
+    jump: ACCEPT
+    state: present
+  - port: 5001
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 5001
+    source_port: 5001
+    jump: ACCEPT
+    state: present
+  - port: 5002
+    action: append
+    chain: INPUT
+    protocol: tcp
+    destination_port: 5002
+    source_port: 5002
+    jump: ACCEPT
+    state: present
+  - port: 8125
+    action: append
+    chain: INPUT
+    protocol: udp
+    destination_port: 8125
+    source_port: 8125
+    jump: ACCEPT
+    state: present
